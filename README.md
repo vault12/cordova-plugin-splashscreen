@@ -1,3 +1,16 @@
+Forked from [https://github.com/apache/cordova-plugin-splashscreen](https://github.com/apache/cordova-plugin-splashscreen)
+
+Modifications:
+
+- added native Vault12 logo animation on splash view
+- added `config.xml` option flag `ShowAnimatedLogoOnSplashScreen` (boolean, default to true) to toggle logo animation:
+
+```xml
+<preference name="ShowAnimatedLogoOnSplashScreen" value="true" />
+```
+
+---
+
 ---
 title: Splashscreen
 description: Control the splash screen for your app.

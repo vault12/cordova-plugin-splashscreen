@@ -36,9 +36,12 @@ typedef struct {
     UIActivityIndicatorView* _activityView;
     UIImageView* _imageView;
     NSString* _curImageName;
+    UIView *_logoContainerView;
     BOOL _visible;
     BOOL _destroyed;
 }
+
+@property (nonatomic, retain) UIImageView *logoImageView;
 
 - (void)show:(CDVInvokedUrlCommand*)command;
 - (void)hide:(CDVInvokedUrlCommand*)command;

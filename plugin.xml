@@ -19,8 +19,8 @@
 -->
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-           id="cordova-plugin-splashscreen"
-      version="5.0.3">
+           id="vault12.splashscreen"
+      version="0.0.1">
     <name>Splashscreen</name>
     <description>Cordova Splashscreen Plugin</description>
     <license>Apache 2.0</license>
@@ -62,6 +62,8 @@
         <source-file src="src/ios/CDVSplashScreen.m" />
         <header-file src="src/ios/CDVViewController+SplashScreen.h" />
         <source-file src="src/ios/CDVViewController+SplashScreen.m" />
+        <resource-file src="res/ios/logo-white.imageset/logo-white.pdf" target="../Images.xcassets/logo-white.imageset/logo-white.pdf" />
+        <resource-file src="res/ios/logo-white.imageset/Contents.json" target="../Images.xcassets/logo-white.imageset/Contents.json" />
 
 	    <framework src="CoreGraphics.framework" />
     </platform>

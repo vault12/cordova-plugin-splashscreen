@@ -115,6 +115,37 @@
         [parentView addSubview:_activityView];
     }
 
+    id showAnimatedLogoOnSplashScreen = [self.commandDelegate.settings objectForKey:[@"ShowAnimatedLogoOnSplashScreen" lowercaseString]];
+    if ([showAnimatedLogoOnSplashScreen boolValue]) {
+        
+        // add animated logo
+        CGFloat statusBarHeight = 20.0;
+        UIView *logoContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, statusBarHeight, parentView.bounds.size.width, parentView.bounds.size.height - statusBarHeight)];
+        logoContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        logoContainerView.backgroundColor = [UIColor clearColor];
+        [parentView addSubview:logoContainerView];
+        _logoContainerView = logoContainerView;
+        
+        UIImage *logoImg = [UIImage imageNamed:@"logo-white"];
+        self.logoImageView = [[UIImageView alloc] initWithImage:logoImg];
+        // CSS width to calculate: 30vw
+        CGFloat logoWidth = logoContainerView.bounds.size.width * 0.3;
+        // logo image initial size: 83.0 x 95.0
+        CGFloat logoHeight = logoWidth * 95.0 / 83.0;
+        _logoImageView.bounds = CGRectMake(0, 0, logoWidth, logoHeight);
+        _logoImageView.center = CGPointMake(logoContainerView.bounds.size.width / 2, logoContainerView.bounds.size.height / 2);
+        _logoImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin
+        | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin
+        | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _logoImageView.contentMode = UIViewContentModeScaleAspectFit;
+        [logoContainerView addSubview:_logoImageView];
+        
+        __weak __typeof(self) weakSelf = self;
+        [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse | UIViewAnimationCurveEaseIn animations:^{
+            weakSelf.logoImageView.alpha = 0;
+        } completion: nil];
+    }
+
     // Frame is required when launching in portrait mode.
     // Bounds for landscape since it captures the rotation.
     [parentView addObserver:self forKeyPath:@"frame" options:0 context:nil];
@@ -128,6 +159,7 @@
 {
     [_imageView setAlpha:0];
     [_activityView setAlpha:0];
+    [_logoImageView setAlpha:0];
 }
 
 - (void)destroyViews
@@ -137,9 +169,14 @@
 
     [_imageView removeFromSuperview];
     [_activityView removeFromSuperview];
+    [_logoImageView removeFromSuperview];
+    [_logoContainerView removeFromSuperview];
+    
     _imageView = nil;
     _activityView = nil;
     _curImageName = nil;
+    self.logoImageView = nil;
+    _logoContainerView = nil;
 
     self.viewController.view.userInteractionEnabled = YES;  // re-enable user interaction upon completion
     @try {
