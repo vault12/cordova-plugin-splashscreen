@@ -28,11 +28,15 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
@@ -40,6 +44,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import com.vault12.vault12.R;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -312,6 +318,47 @@ public class SplashScreen extends CordovaPlugin {
                     splashImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 }
 
+                View splashDialogContentView = splashImageView;
+
+                if (preferences.getBoolean("ShowAnimatedLogoOnSplashScreen", false)) {
+
+                    // add logo image layout
+
+                    RelativeLayout logoLayout = new RelativeLayout(context);
+                    LayoutParams logoLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                    logoLayout.setLayoutParams(logoLayoutParams);
+                    logoLayout.setMinimumHeight(display.getHeight());
+                    logoLayout.setMinimumWidth(display.getWidth());
+
+                    LinearLayout wrapperLayout = new LinearLayout(context);
+                    wrapperLayout.setGravity(Gravity.CENTER);
+                    wrapperLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    LayoutParams wrapperLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                    wrapperLayout.setLayoutParams(wrapperLayoutParams);
+
+                    ImageView logoImageView = new ImageView(context);
+                    logoImageView.setImageResource(R.drawable.ic_logo_white);
+                    float logoWidth = display.getWidth() * 0.3f;
+                    float logoHeight = logoWidth * 95.0f / 83.0f;
+                    LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(Math.round(logoWidth), Math.round(logoHeight));
+                    logoImageView.setLayoutParams(imageLayoutParams);
+                    wrapperLayout.setPadding(0, 10, 0, 0);
+                    wrapperLayout.addView(logoImageView);
+
+                    logoLayout.addView(splashImageView);
+                    logoLayout.addView(wrapperLayout);
+                    splashDialogContentView = logoLayout;
+
+                    // add logo animation
+
+                    Animation animation = new AlphaAnimation(0, 1);
+                    animation.setDuration(600);
+                    animation.setRepeatCount(Animation.INFINITE);
+                    animation.setRepeatMode(Animation.REVERSE);
+                    animation.setInterpolator(new DecelerateInterpolator());
+                    logoImageView.startAnimation(animation);
+                }
+
                 // Create and show the dialog
                 splashDialog = new Dialog(context, android.R.style.Theme_Translucent_NoTitleBar);
                 // check to see if the splash screen should be full screen
@@ -320,7 +367,7 @@ public class SplashScreen extends CordovaPlugin {
                     splashDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 }
-                splashDialog.setContentView(splashImageView);
+                splashDialog.setContentView(splashDialogContentView);
                 splashDialog.setCancelable(false);
                 splashDialog.show();
 
