@@ -1,3 +1,7 @@
+Forked from [https://github.com/apache/cordova-plugin-splashscreen](https://github.com/apache/cordova-plugin-splashscreen)
+
+**Please note:** Vault12-modified package version is on `5.0.x` branch.
+
 ---
 title: Splashscreen
 description: Control the splash screen for your app.
