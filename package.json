@@ -1,6 +1,6 @@
 {
   "name": "@vault12/plugin-splashscreen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Cordova Splashscreen Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
