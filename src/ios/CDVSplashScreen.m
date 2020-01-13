@@ -138,6 +138,14 @@
         | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin
         | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _logoImageView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        UIImageView *bgLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo-darkblue"]];
+        bgLogoImageView.bounds =_logoImageView.bounds;
+        bgLogoImageView.center = _logoImageView.center;
+        bgLogoImageView.autoresizingMask = _logoImageView.autoresizingMask;
+        bgLogoImageView.contentMode = _logoImageView.contentMode;
+        
+        [logoContainerView addSubview:bgLogoImageView];
         [logoContainerView addSubview:_logoImageView];
         
         __weak __typeof(self) weakSelf = self;

@@ -48,6 +48,7 @@
 
         <source-file src="src/android/SplashScreen.java" target-dir="src/org/apache/cordova/splashscreen" />
         <resource-file src="res/android/ic_logo_white.xml" target="res/drawable/ic_logo_white.xml" />
+        <resource-file src="res/android/ic_logo_darkblue.xml" target="res/drawable/ic_logo_darkblue.xml" />
     </platform>
 
     <!-- ios -->

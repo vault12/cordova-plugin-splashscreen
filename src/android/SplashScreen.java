@@ -345,7 +345,19 @@ public class SplashScreen extends CordovaPlugin {
                     wrapperLayout.setPadding(0, 10, 0, 0);
                     wrapperLayout.addView(logoImageView);
 
+                    LinearLayout bgWrapperLayout = new LinearLayout(context);
+                    bgWrapperLayout.setGravity(Gravity.CENTER);
+                    bgWrapperLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    bgWrapperLayout.setLayoutParams(wrapperLayoutParams);
+
+                    ImageView bgLogoImageView = new ImageView(context);
+                    bgLogoImageView.setImageResource(R.drawable.ic_logo_darkblue);
+                    bgLogoImageView.setLayoutParams(imageLayoutParams);
+                    bgWrapperLayout.setPadding(0, 10, 0, 0);
+                    bgWrapperLayout.addView(bgLogoImageView);
+
                     logoLayout.addView(splashImageView);
+                    logoLayout.addView(bgWrapperLayout);
                     logoLayout.addView(wrapperLayout);
                     splashDialogContentView = logoLayout;
 
