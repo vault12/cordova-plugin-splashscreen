@@ -37,6 +37,7 @@ typedef struct {
     UIImageView* _imageView;
     NSString* _curImageName;
     UIView *_logoContainerView;
+    UIView *_bgLogoImageView;
     BOOL _visible;
     BOOL _destroyed;
 }

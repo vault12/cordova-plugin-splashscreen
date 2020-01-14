@@ -21,6 +21,7 @@
 #import <Cordova/CDVViewController.h>
 #import <Cordova/CDVScreenOrientationDelegate.h>
 #import "CDVViewController+SplashScreen.h"
+#import "AppDelegate.h"
 
 #define kSplashScreenDurationDefault 3000.0f
 #define kFadeDurationDefault 500.0f
@@ -118,11 +119,17 @@
     id showAnimatedLogoOnSplashScreen = [self.commandDelegate.settings objectForKey:[@"ShowAnimatedLogoOnSplashScreen" lowercaseString]];
     if ([showAnimatedLogoOnSplashScreen boolValue]) {
         
+        UIWindow *window = [(AppDelegate *)[[UIApplication sharedApplication] delegate] window];
+        
         // add animated logo
-        CGFloat statusBarHeight = 20.0;
-        UIView *logoContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, statusBarHeight, parentView.bounds.size.width, parentView.bounds.size.height - statusBarHeight)];
-        logoContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        logoContainerView.backgroundColor = [UIColor clearColor];
+        
+        BOOL isNewScreenType = !(device.iPhone4 || device.iPhone5 || device.iPhone6 || device.iPhone6Plus);
+        CGFloat statusBarHeight = isNewScreenType ? 0 : 20;
+        CGFloat heightOffset = isNewScreenType ? -7 : -1;
+        
+        UIView *logoContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, statusBarHeight, window.bounds.size.width, window.bounds.size.height - statusBarHeight)];
+        logoContainerView.autoresizingMask = UIViewAutoresizingNone; //UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        logoContainerView.backgroundColor = [UIColor clearColor]; // colorWithWhite:0.5 alpha:1];
         [parentView addSubview:logoContainerView];
         _logoContainerView = logoContainerView;
         
@@ -133,19 +140,19 @@
         // logo image initial size: 83.0 x 95.0
         CGFloat logoHeight = logoWidth * 95.0 / 83.0;
         _logoImageView.bounds = CGRectMake(0, 0, logoWidth, logoHeight);
-        _logoImageView.center = CGPointMake(logoContainerView.bounds.size.width / 2, logoContainerView.bounds.size.height / 2);
+        _logoImageView.center = CGPointMake(logoContainerView.bounds.size.width / 2, logoContainerView.bounds.size.height / 2 + heightOffset);
         _logoImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin
         | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin
         | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _logoImageView.contentMode = UIViewContentModeScaleAspectFit;
         
-        UIImageView *bgLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo-darkblue"]];
-        bgLogoImageView.bounds =_logoImageView.bounds;
-        bgLogoImageView.center = _logoImageView.center;
-        bgLogoImageView.autoresizingMask = _logoImageView.autoresizingMask;
-        bgLogoImageView.contentMode = _logoImageView.contentMode;
+        _bgLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo-darkblue"]];
+        _bgLogoImageView.bounds =_logoImageView.bounds;
+        _bgLogoImageView.center = _logoImageView.center;
+        _bgLogoImageView.autoresizingMask = _logoImageView.autoresizingMask;
+        _bgLogoImageView.contentMode = _logoImageView.contentMode;
         
-        [logoContainerView addSubview:bgLogoImageView];
+        [logoContainerView addSubview:_bgLogoImageView];
         [logoContainerView addSubview:_logoImageView];
         
         __weak __typeof(self) weakSelf = self;
@@ -167,7 +174,9 @@
 {
     [_imageView setAlpha:0];
     [_activityView setAlpha:0];
+    [_logoContainerView setAlpha:0];
     [_logoImageView setAlpha:0];
+    [_bgLogoImageView setAlpha:0];
 }
 
 - (void)destroyViews
@@ -178,12 +187,14 @@
     [_imageView removeFromSuperview];
     [_activityView removeFromSuperview];
     [_logoImageView removeFromSuperview];
+    [_bgLogoImageView removeFromSuperview];
     [_logoContainerView removeFromSuperview];
     
     _imageView = nil;
     _activityView = nil;
     _curImageName = nil;
     self.logoImageView = nil;
+    _bgLogoImageView = nil;
     _logoContainerView = nil;
 
     self.viewController.view.userInteractionEnabled = YES;  // re-enable user interaction upon completion
