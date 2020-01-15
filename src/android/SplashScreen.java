@@ -69,6 +69,8 @@ public class SplashScreen extends CordovaPlugin {
      * Displays the splash drawable.
      */
     private ImageView splashImageView;
+    private ImageView logoImageView;
+    private ImageView bgLogoImageView;
 
     /**
      * Remember last device orientation to detect orientation changes.
@@ -222,6 +224,13 @@ public class SplashScreen extends CordovaPlugin {
         }
     }
 
+    private AlphaAnimation makeFadeOutAnimation(int duration) {
+        AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new DecelerateInterpolator());
+        fadeOut.setDuration(duration);
+        return fadeOut;
+    }
+
     private void removeSplashScreen(final boolean forceHideImmediately) {
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
@@ -229,12 +238,17 @@ public class SplashScreen extends CordovaPlugin {
                     final int fadeSplashScreenDuration = getFadeDuration();
                     // CB-10692 If the plugin is being paused/destroyed, skip the fading and hide it immediately
                     if (fadeSplashScreenDuration > 0 && forceHideImmediately == false) {
-                        AlphaAnimation fadeOut = new AlphaAnimation(1, 0);
-                        fadeOut.setInterpolator(new DecelerateInterpolator());
-                        fadeOut.setDuration(fadeSplashScreenDuration);
-
+                        AlphaAnimation fadeOut = makeFadeOutAnimation(fadeSplashScreenDuration);
                         splashImageView.setAnimation(fadeOut);
                         splashImageView.startAnimation(fadeOut);
+
+                        AlphaAnimation logoAnim = makeFadeOutAnimation(fadeSplashScreenDuration);
+                        logoImageView.setAnimation(logoAnim);
+                        logoImageView.startAnimation(logoAnim);
+
+                        AlphaAnimation bgLogoAnim = makeFadeOutAnimation(fadeSplashScreenDuration);
+                        bgLogoImageView.setAnimation(bgLogoAnim);
+                        bgLogoImageView.startAnimation(bgLogoAnim);
 
                         fadeOut.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -336,7 +350,7 @@ public class SplashScreen extends CordovaPlugin {
                     LayoutParams wrapperLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                     wrapperLayout.setLayoutParams(wrapperLayoutParams);
 
-                    ImageView logoImageView = new ImageView(context);
+                    logoImageView = new ImageView(context);
                     logoImageView.setImageResource(R.drawable.ic_logo_white);
                     float logoWidth = display.getWidth() * 0.3f;
                     float logoHeight = logoWidth * 95.0f / 83.0f;
@@ -350,7 +364,7 @@ public class SplashScreen extends CordovaPlugin {
                     bgWrapperLayout.setOrientation(LinearLayout.HORIZONTAL);
                     bgWrapperLayout.setLayoutParams(wrapperLayoutParams);
 
-                    ImageView bgLogoImageView = new ImageView(context);
+                    bgLogoImageView = new ImageView(context);
                     bgLogoImageView.setImageResource(R.drawable.ic_logo_darkblue);
                     bgLogoImageView.setLayoutParams(imageLayoutParams);
                     bgWrapperLayout.setPadding(0, 10, 0, 0);
