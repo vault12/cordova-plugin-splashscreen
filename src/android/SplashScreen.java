@@ -27,13 +27,17 @@ import android.content.res.Configuration;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -76,6 +80,10 @@ public class SplashScreen extends CordovaPlugin {
      * Remember last device orientation to detect orientation changes.
      */
     private int orientation;
+
+    private WindowInsets windowInsets;
+    private LinearLayout logoWrapperLinearLayout;
+    private LinearLayout bgLogoWrapperLinearLayout;
 
     // Helper to be compile-time compatible with both Cordova 3.x and 4.x.
     private View getView() {
@@ -124,6 +132,36 @@ public class SplashScreen extends CordovaPlugin {
         if (preferences.getBoolean("SplashShowOnlyFirstTime", true)) {
             firstShow = false;
         }
+
+        cordova.getActivity().getWindow().getDecorView().setOnApplyWindowInsetsListener((view, insets) -> {
+            setWindowInsets(view.getRootWindowInsets());
+            return insets;
+        });
+
+    }
+
+    private void setWindowInsets(WindowInsets insets) {
+        windowInsets = insets;
+        if (windowInsets != null && logoWrapperLinearLayout != null && bgLogoWrapperLinearLayout != null) {
+            // the hacky  - works.
+            int padding = getLogoPaddingTop(windowInsets);
+            logoWrapperLinearLayout.setPadding(0, padding, 0, 0);
+            bgLogoWrapperLinearLayout.setPadding(0, padding, 0, 0);
+
+            // the correct way - doesn't work. don't remove for reference
+            // int paddingTop = windowInsets.getStableInsetBottom();
+            // int paddingBottom = windowInsets.getStableInsetTop();
+            // logoWrapperLinearLayout.setPadding(0, paddingTop, 0, paddingBottom);
+            // bgLogoWrapperLinearLayout.setPadding(0, paddingTop, 0, paddingBottom);
+        }
+    }
+
+    private int getLogoPaddingTop(WindowInsets insets) {
+        int padding = 90;
+        if (insets != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && windowInsets.getDisplayCutout() != null) {
+            padding = 10;
+        }
+        return padding;
     }
 
     /**
@@ -356,7 +394,11 @@ public class SplashScreen extends CordovaPlugin {
                     float logoHeight = logoWidth * 95.0f / 83.0f;
                     LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(Math.round(logoWidth), Math.round(logoHeight));
                     logoImageView.setLayoutParams(imageLayoutParams);
-                    wrapperLayout.setPadding(0, 10, 0, 0);
+
+                    int paddingTop = getLogoPaddingTop(windowInsets);
+
+                    wrapperLayout.setPadding(0, paddingTop, 0, 0);
+                    logoWrapperLinearLayout = wrapperLayout;
                     wrapperLayout.addView(logoImageView);
 
                     LinearLayout bgWrapperLayout = new LinearLayout(context);
@@ -367,7 +409,8 @@ public class SplashScreen extends CordovaPlugin {
                     bgLogoImageView = new ImageView(context);
                     bgLogoImageView.setImageResource(R.drawable.ic_logo_darkblue);
                     bgLogoImageView.setLayoutParams(imageLayoutParams);
-                    bgWrapperLayout.setPadding(0, 10, 0, 0);
+                    bgWrapperLayout.setPadding(0, paddingTop, 0, 0);
+                    bgLogoWrapperLinearLayout = bgWrapperLayout;
                     bgWrapperLayout.addView(bgLogoImageView);
 
                     logoLayout.addView(splashImageView);
