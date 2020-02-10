@@ -143,25 +143,15 @@ public class SplashScreen extends CordovaPlugin {
     private void setWindowInsets(WindowInsets insets) {
         windowInsets = insets;
         if (windowInsets != null && logoWrapperLinearLayout != null && bgLogoWrapperLinearLayout != null) {
-            // the hacky  - works.
-            int padding = getLogoPaddingTop(windowInsets);
-            logoWrapperLinearLayout.setPadding(0, padding, 0, 0);
-            bgLogoWrapperLinearLayout.setPadding(0, padding, 0, 0);
-
-            // the correct way - doesn't work. don't remove for reference
+            // here you can use correct screen insets to apply specific offset if needed
+            // don't remove for reference
             // int paddingTop = windowInsets.getStableInsetBottom();
             // int paddingBottom = windowInsets.getStableInsetTop();
+            // int paddingTop = 0;
+            // int paddingBottom = 0;
             // logoWrapperLinearLayout.setPadding(0, paddingTop, 0, paddingBottom);
             // bgLogoWrapperLinearLayout.setPadding(0, paddingTop, 0, paddingBottom);
         }
-    }
-
-    private int getLogoPaddingTop(WindowInsets insets) {
-        int padding = 90;
-        if (insets != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && windowInsets.getDisplayCutout() != null) {
-            padding = 10;
-        }
-        return padding;
     }
 
     /**
@@ -395,9 +385,7 @@ public class SplashScreen extends CordovaPlugin {
                     LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(Math.round(logoWidth), Math.round(logoHeight));
                     logoImageView.setLayoutParams(imageLayoutParams);
 
-                    int paddingTop = getLogoPaddingTop(windowInsets);
-
-                    wrapperLayout.setPadding(0, paddingTop, 0, 0);
+                    wrapperLayout.setPadding(0, 0, 0, 0);
                     logoWrapperLinearLayout = wrapperLayout;
                     wrapperLayout.addView(logoImageView);
 
@@ -409,7 +397,7 @@ public class SplashScreen extends CordovaPlugin {
                     bgLogoImageView = new ImageView(context);
                     bgLogoImageView.setImageResource(R.drawable.ic_logo_darkblue);
                     bgLogoImageView.setLayoutParams(imageLayoutParams);
-                    bgWrapperLayout.setPadding(0, paddingTop, 0, 0);
+                    bgWrapperLayout.setPadding(0, 0, 0, 0);
                     bgLogoWrapperLinearLayout = bgWrapperLayout;
                     bgWrapperLayout.addView(bgLogoImageView);
 

@@ -123,13 +123,9 @@
         
         // add animated logo
         
-        BOOL isNewScreenType = !(device.iPhone4 || device.iPhone5 || device.iPhone6 || device.iPhone6Plus);
-        CGFloat statusBarHeight = isNewScreenType ? 0 : 20;
-        CGFloat heightOffset = isNewScreenType ? -7 : -1;
-        
-        UIView *logoContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, statusBarHeight, window.bounds.size.width, window.bounds.size.height - statusBarHeight)];
-        logoContainerView.autoresizingMask = UIViewAutoresizingNone; //UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        logoContainerView.backgroundColor = [UIColor clearColor]; // colorWithWhite:0.5 alpha:1];
+        UIView *logoContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, window.bounds.size.width, window.bounds.size.height)];
+        logoContainerView.autoresizingMask = UIViewAutoresizingNone;
+        logoContainerView.backgroundColor = [UIColor clearColor];
         [parentView addSubview:logoContainerView];
         _logoContainerView = logoContainerView;
         
@@ -140,7 +136,7 @@
         // logo image initial size: 83.0 x 95.0
         CGFloat logoHeight = logoWidth * 95.0 / 83.0;
         _logoImageView.bounds = CGRectMake(0, 0, logoWidth, logoHeight);
-        _logoImageView.center = CGPointMake(logoContainerView.bounds.size.width / 2, logoContainerView.bounds.size.height / 2 + heightOffset);
+        _logoImageView.center = CGPointMake(logoContainerView.bounds.size.width / 2, logoContainerView.bounds.size.height / 2);
         _logoImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin
         | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin
         | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
