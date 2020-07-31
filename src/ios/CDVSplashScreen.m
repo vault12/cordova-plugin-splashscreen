@@ -44,6 +44,9 @@
 - (void)hide:(CDVInvokedUrlCommand*)command
 {
     [self setVisible:NO andForce:YES];
+    if ([self.viewController isKindOfClass:[CDVViewController class]]) {
+        [(CDVViewController*)self.viewController showLaunchScreen:NO];
+    }
 }
 
 - (void)pageDidLoad
